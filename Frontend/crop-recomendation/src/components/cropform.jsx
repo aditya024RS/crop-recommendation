@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { recommendCrop } from "./api";
+import { recommendCrop } from "../api/recommendCrop ";
 
 function CropForm() {
   const [result, setResult] = useState(null);
