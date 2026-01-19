@@ -23,11 +23,14 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
-    "chai": "^4.3.10",
+
+    "chai": "^6.2.2",
     "eslint": "^9.39.2",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^17.0.0",
     "mocha": "^11.7.5",
+    "sinon": "^21.0.1",
+
     "supertest": "^7.2.2"
   }
 }
