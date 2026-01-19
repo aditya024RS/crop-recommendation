@@ -24,12 +24,12 @@ jobs:
         run: npm install
 
       - name: Run backend tests
-        working-directory: server
+        working-directory: Backend
         run: npm test
 
       # ===== Frontend =====
       - name: Install frontend dependencies
-        working-directory: client
+        working-directory: Frontend/crop-recomendation
         run: npm install
 
       - name: Run frontend tests
