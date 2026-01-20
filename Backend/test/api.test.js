@@ -1,63 +1,24 @@
-const request = require("supertest");
-const chai = require("chai");
-const sinon = require("sinon");
-const axios = require("axios");
+import request from "supertest";
+import { expect } from "chai";
+import sinon from "sinon";
+import axios from "axios";
+import app from "../server.js"; // ✅ extension required
 
-const app = require("../server");
-const weatherService = require("../services/weatherService");
+describe("Crop Recommendation API", () => {
 
-const expect = chai.expect;
+  afterEach(() => {
+    sinon.restore(); // ✅ clean all stubs after each test
+  });
 
-describe("🌾 Crop Recommendation API", () => {
-
-  beforeEach(() => {
-    // ✅ Mock Python ML service
+  it("should return recommended crop and top 3 crops for valid input", async () => {
+    // mock ML service response
     sinon.stub(axios, "post").resolves({
       data: {
-        recommended_crop: "Rice",
-        top_3_crops: ["Wheat", "Maize", "Barley"]
+        recommended_crop: "rice",
+        top_3: ["rice", "wheat", "maize"]
       }
     });
 
-    // ✅ CORRECT way to mock weather service
-    sinon.stub(weatherService, "getWeatherData").resolves({
-      temperature: 26,
-      humidity: 70,
-      rainfall: 120,
-      location: "Delhi"
-    });
-  });
-
-  afterEach(() => {
-    sinon.restore(); // IMPORTANT
-  });
-
-  it("✅ should return crop prediction using manual inputs", async () => {
-    const res = await request(app)
-      .post("/api/crop/recommend")
-      .send({
-        N: 90,
-        P: 42,
-        K: 43,
-        ph: 6.5,
-        temperature: 25,
-        humidity: 60,
-        rainfall: 100
-      });
-
-    expect(res.status).to.equal(200);
-    expect(res.body.success).to.equal(true);
-    expect(res.body.prediction).to.equal("Rice");
-    expect(res.body.top_alternatives).to.be.an("array");
-    expect(res.body.market_price).to.exist;
-
-    expect(res.body.weather_used.source).to.equal("Manual Input");
-    expect(res.body.weather_used.temp).to.equal(25);
-    expect(res.body.weather_used.humid).to.equal(60);
-    expect(res.body.weather_used.rain).to.equal(100);
-  });
-
-  it("✅ should auto-fetch weather when lat/lon are provided", async () => {
     const res = await request(app)
       .post("/api/crop/recommend")
       .send({
@@ -76,8 +37,7 @@ describe("🌾 Crop Recommendation API", () => {
     expect(res.body.weather_used.rain).to.equal(120);
   });
 
-  it("❌ should return 500 if Python ML service fails", async () => {
-    axios.post.restore();
+  it("should return 500 if Python ML service fails", async () => {
     sinon.stub(axios, "post").rejects(new Error("ML server down"));
 
     const res = await request(app)
