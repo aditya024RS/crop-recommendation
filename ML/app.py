@@ -48,7 +48,6 @@ def predict_crop(data: CropInput):
     probs = model.predict_proba(features)[0]
     top_idx = np.argsort(probs)[::-1][:3]
     top_crops = encoder.inverse_transform(top_idx)
-    print("................................",crop)
     return {
         "recommended_crop": crop,
         "top_3_crops": top_crops.tolist()
