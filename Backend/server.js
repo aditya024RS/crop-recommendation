@@ -1,11 +1,11 @@
 require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const cropRoutes = require("./routes/cropRoutes");
+import express, { json } from "express";
+import cors from "cors";
+import cropRoutes from "./routes/cropRoutes";
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(json());
 
 app.use("/api/crop", cropRoutes);
 
@@ -14,4 +14,4 @@ app.listen(5000, () => {
 });
 
 
-module.exports = app;
+export default app;

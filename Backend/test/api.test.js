@@ -1,12 +1,24 @@
-import request from 'supertest';
-import { expect as _expect } from 'chai';
-const expect = _expect;
+import request from "supertest";
+import { expect } from "chai";
+import sinon from "sinon";
+import axios from "axios";
+import app from "../server.js"; // ✅ extension required
 
-// Import your Express app (adjust path if needed)
-import app from '../server'; 
+describe("Crop Recommendation API", () => {
 
-describe('Crop Recommendation API', () => {
-  it('should return recommended crop and top 3 crops for valid input', async () => {
+  afterEach(() => {
+    sinon.restore(); // ✅ clean all stubs after each test
+  });
+
+  it("should return recommended crop and top 3 crops for valid input", async () => {
+    // mock ML service response
+    sinon.stub(axios, "post").resolves({
+      data: {
+        recommended_crop: "rice",
+        top_3: ["rice", "wheat", "maize"]
+      }
+    });
+
     const res = await request(app)
       .post("/api/crop/recommend")
       .send({
@@ -25,8 +37,7 @@ describe('Crop Recommendation API', () => {
     expect(res.body.weather_used.rain).to.equal(120);
   });
 
-  it("❌ should return 500 if Python ML service fails", async () => {
-    axios.post.restore();
+  it("should return 500 if Python ML service fails", async () => {
     sinon.stub(axios, "post").rejects(new Error("ML server down"));
 
     const res = await request(app)
