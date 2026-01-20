@@ -1,5 +1,7 @@
-const axios = require("axios");
-require("dotenv").config();
+import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // ✅ CENTRAL MOCK WEATHER (single source of truth)
 const MOCK_WEATHER = {
@@ -9,7 +11,7 @@ const MOCK_WEATHER = {
   location: "Mock-Weather"
 };
 
-exports.getWeatherData = async (lat, lon) => {
+export async function getWeatherData(lat, lon) {
   try {
     const apiKey = process.env.WEATHER_API_KEY;
 
@@ -23,7 +25,7 @@ exports.getWeatherData = async (lat, lon) => {
     const response = await axios.get(url);
 
     // ❌ Unexpected response → fallback
-    if (!response || !response.data || !response.data.main) {
+    if (!response?.data?.main) {
       console.warn("⚠ Invalid weather response, using mock weather");
       return MOCK_WEATHER;
     }
@@ -47,4 +49,4 @@ exports.getWeatherData = async (lat, lon) => {
     console.warn("⚠ Falling back to mock weather");
     return MOCK_WEATHER;
   }
-};
+}

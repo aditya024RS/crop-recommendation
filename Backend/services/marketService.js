@@ -9,7 +9,7 @@ const MARKET_PRICES = {
   chickpea: 5100, coffee: 18000
 };
 
-exports.getMarketPrice = (cropName) => {
+export function getMarketPrice(cropName) {
   if (!cropName) return null;
   
   const crop = cropName.toLowerCase();
@@ -20,4 +20,4 @@ exports.getMarketPrice = (cropName) => {
   const livePrice = Math.floor(basePrice * (1 + fluctuation));
   
   return livePrice;
-};
+}
